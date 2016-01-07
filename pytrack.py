@@ -4,11 +4,21 @@ import cv2
 from matplotlib import pyplot as plt
 from tkFileDialog import *
 
+def file_save():
+    global dist,t 
+    fout = asksaveasfile(mode='w', defaultextension=".txt")
+    
+    for i in range(dist.shape[0]):
+        text2save = str(dist[i])+'\t'+str(t[i])
+        fout.write("%s\n" % text2save)
+        
+    fout.close()    
+
 vidcap = cv2.VideoCapture('figure3.avi')
 s=0 										#time start
-vidcap.set(cv2.cv.CV_CAP_PROP_POS_MSEC,s)  
-length = int(vidcap.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT))
-fps= vidcap.get(cv2.cv.CV_CAP_PROP_FPS)
+vidcap.set(cv2.CAP_PROP_POS_MSEC,s)  
+length = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
+fps= vidcap.get(cv2.CAP_PROP_FPS)
 
 
 ret ,frame = vidcap.read() #read the video
