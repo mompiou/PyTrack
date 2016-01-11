@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 import matplotlib as mpl
+import matplotlib.ticker as ticker  
 
 def meanaveraging(x, N):
 	return np.convolve(x, np.ones((N,))/N,'valid')
@@ -33,11 +34,11 @@ s2=np.diff(meanaveraging(np.abs(t0[:,0]),g))*1200e-9*0.8/616/0.04		#calculate th
 s=[s0,s1,s2]
 t=[t0[g::1,1],t0[g::g,1],t0[g-1:-1,1]]										#time
 print s2.shape, t[2].shape
-i=2
+i=0
 A=np.vstack((t[i],s[i]))
 
-Aa=A[:,A[0,:]>7.2]														#select the data range for fitting
-Ab=Aa[:,Aa[0,:]<30]
+Aa=A[:,A[0,:]>7]														#select the data range for fitting
+Ab=Aa[:,Aa[0,:]<15]
 #print Ab
 
 def func(x, a,b):														#fitting function
@@ -47,17 +48,18 @@ popt, pcov = curve_fit(func, Ab[0,:], Ab[1,:])							#get the fitting parameters
 print(popt)
 #a=ax1.plot(t0[:,1], t0[:,0], label=r'Displacement vs time')	
 
-a=ax1.plot(t[i], s[i], label=r'Boundary speed vs time')				#plot
-b=ax1.plot(t[i], func(t[i],popt[0],popt[1]),label='Curve fit: a='+str(np.around(popt[0]*1e9,decimals=1))+'x10$^{-9}$, b='+str(np.around(popt[1],decimals=2)))
+a=ax1.plot(t[i], s[i]*1e9, label=r'exp.')				#plot
+b=ax1.plot(t[i], func(t[i],popt[0]*1e9,popt[1]),label='fit')
 plt.setp(b,color='#4169E1',linewidth=2,alpha=1,ms=10,mew=0.1,ls='-',markevery=1)
-plt.setp(a,color='#FF4136',linewidth=3,alpha=1,marker='o',ms=10,mew=0.1,ls='-',markevery=1)
+plt.setp(a,color='#FF4136',linewidth=0,alpha=1,marker='o',ms=10,mew=0.1,markevery=1)
 ax1.set_xlabel(r't (s)', fontsize=16)
 ax1.set_ylabel(r'v (nm/s)',fontsize=16)
+#shift = 220                                                                                                                                                                                                                                                                   
+#ticks = ticker.FuncFormatter(lambda x, pos: '{0:g}'.format(x+shift))                                                                                                                                                                                                           
+#ax1.xaxis.set_major_formatter(ticks) 
+ax1.axis([0,40,0,15])
 plt.tick_params(labelsize=12)
 ax1.axhline(linewidth=0.5)   
-plt.legend(loc='upper left', frameon=False, numpoints=1)
-
-
-
+plt.legend(loc='upper right', frameon=False, numpoints=1)
 plt.show()
 
