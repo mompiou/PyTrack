@@ -24,7 +24,8 @@ ax1 = plt.subplot()
 
 t0=np.genfromtxt('results.txt', delimiter='\t') 						#Read the results from the file
 t0=reject_outliers(t0, 2,5)
-
+sh=240 #time shift
+t0[:,1]=t0[:,1]+sh
 g=50																	#averaging number
 
 
@@ -37,11 +38,11 @@ print s2.shape, t[2].shape
 i=1
 A=np.vstack((t[i],s[i]))
 
-Aa=A[:,A[0,:]>6]														#select the data range for fitting
-Ab=Aa[:,Aa[0,:]<30]
+Aa=A[:,A[0,:]>6+sh]														#select the data range for fitting
+Ab=Aa[:,Aa[0,:]<30+sh]
 
-Aa1=A[:,A[0,:]>6]														#select the data range for fitting
-Ab1=Aa[:,Aa[0,:]<15]
+Aa1=A[:,A[0,:]>6+sh]														#select the data range for fitting
+Ab1=Aa[:,Aa[0,:]<15+sh]
 
 def func(x, a,b):														#fitting function
     return a/(x+b)
@@ -62,7 +63,7 @@ ax1.set_ylabel(r'v (nm/s)',fontsize=16)
 shift = 0                                                                                                                                                                                                                                                              
 ticks = ticker.FuncFormatter(lambda x, pos: '{0:g}'.format(x+shift))                                                                                                                                                                                                           
 ax1.xaxis.set_major_formatter(ticks) 
-ax1.axis([0,40,0,15])
+ax1.axis([sh,sh+40,0,15])
 plt.tick_params(labelsize=12)
 ax1.axhline(linewidth=0.5)   
 plt.legend(loc='upper right', frameon=False, numpoints=1)
